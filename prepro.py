@@ -171,7 +171,7 @@ def process_file(filename, config, word_counter=None, char_counter=None):
     examples = []
     eval_examples = {}
 
-    outputs = Parallel(n_jobs=12, verbose=10)(delayed(_process_article)(article, config) for article in data)
+    outputs = Parallel(n_jobs=5, verbose=10)(delayed(_process_article)(article, config) for article in data)
     # outputs = [_process_article(article, config) for article in data]
     examples = [e[0] for e in outputs]
     for _, e in outputs:
