@@ -94,10 +94,6 @@ def train(config):
 
     for epoch in range(10000):
         for data in build_train_iterator():
-            print("size of context_idxs:", data['context_idxs'].shape)
-            print("size of context_char_idxs", data['context_char_idxs'].shape)
-            print("size of y1:", data['y1'].shape)
-            print("start_mapping:", data['start_mapping'])
             context_idxs = Variable(data['context_idxs'])
             ques_idxs = Variable(data['ques_idxs'])
             context_char_idxs = Variable(data['context_char_idxs'])
@@ -120,7 +116,6 @@ def train(config):
             loss.backward()
             optimizer.step()
 
-            print("loss.data:",loss.data)
             total_loss += loss.data#[0]
             global_step += 1
 
