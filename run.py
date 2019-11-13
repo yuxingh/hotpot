@@ -155,7 +155,7 @@ def train(config):
                         cur_patience = 0
         if stop_train: break
     logging('best_dev_F1 {}'.format(best_dev_F1))
-    torch.save(model.state_dict(), 'parameters')#yxh
+
 
 def evaluate_batch(data_source, model, max_batches, eval_file, config):
     answer_dict = {}
