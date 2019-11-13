@@ -39,3 +39,5 @@ with open('hotpot_train_v1.1.json') as f:
     original.extend(result)
 with open('hotpot_train_v1.2.json', 'w') as f:
     json.dump(original, f)
+with open('hotpot_train_squad.json', 'w') as f:
+    json.dump(result, f)
