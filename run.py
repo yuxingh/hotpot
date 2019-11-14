@@ -87,6 +87,7 @@ def train(config):
     total_loss = 0
     global_step = 0
     best_dev_F1 = None
+    best_loss = None #yxh
     stop_train = False
     start_time = time.time()
     eval_start_time = time.time()
@@ -108,9 +109,10 @@ def train(config):
             all_mapping = Variable(data['all_mapping'])
 
             logit1, logit2, predict_type, predict_support = model(context_idxs, ques_idxs, context_char_idxs, ques_char_idxs, context_lens, start_mapping, end_mapping, all_mapping, return_yp=False)
-            loss_1 = (nll_sum(predict_type, q_type) + nll_sum(logit1, y1) + nll_sum(logit2, y2)) / context_idxs.size(0)
-            loss_2 = nll_average(predict_support.view(-1, 2), is_support.view(-1))
-            loss = loss_1 + config.sp_lambda * loss_2
+            #loss_1 = (nll_sum(predict_type, q_type) + nll_sum(logit1, y1) + nll_sum(logit2, y2)) / context_idxs.size(0)
+            #loss_2 = nll_average(predict_support.view(-1, 2), is_support.view(-1))
+            #loss = loss_1 + config.sp_lambda * loss_2
+            loss = config.sp_lambda * nll_average(predict_support.view(-1, 2), is_support.view(-1))#yxh
 
             optimizer.zero_grad()
             loss.backward()
@@ -137,12 +139,18 @@ def train(config):
                 logging('-' * 89)
 
                 eval_start_time = time.time()
-
+                '''
                 dev_F1 = metrics['f1']
                 if best_dev_F1 is None or dev_F1 > best_dev_F1:
                     best_dev_F1 = dev_F1
                     torch.save(ori_model.state_dict(), os.path.join(config.save, 'model.pt'))
                     cur_patience = 0
+                '''
+                dev_loss = metrics['loss']
+                if best_loss is None or dev_loss < best_loss:
+                    best_loss = dev_loss
+                    torch.save(ori_model.state_dict(), os.path.join(config.save, 'model.pt'))
+                    cur_patience = 0#yxh
                 else:
                     cur_patience += 1
                     if cur_patience >= config.patience:
@@ -154,7 +162,7 @@ def train(config):
                             break
                         cur_patience = 0
         if stop_train: break
-    logging('best_dev_F1 {}'.format(best_dev_F1))
+    #logging('best_dev_F1 {}'.format(best_dev_F1))
 
 
 def evaluate_batch(data_source, model, max_batches, eval_file, config):
@@ -179,7 +187,8 @@ def evaluate_batch(data_source, model, max_batches, eval_file, config):
         all_mapping = Variable(data['all_mapping'], volatile=True)
 
         logit1, logit2, predict_type, predict_support, yp1, yp2 = model(context_idxs, ques_idxs, context_char_idxs, ques_char_idxs, context_lens, start_mapping, end_mapping, all_mapping, return_yp=True)
-        loss = (nll_sum(predict_type, q_type) + nll_sum(logit1, y1) + nll_sum(logit2, y2)) / context_idxs.size(0) + config.sp_lambda * nll_average(predict_support.view(-1, 2), is_support.view(-1))
+        #loss = (nll_sum(predict_type, q_type) + nll_sum(logit1, y1) + nll_sum(logit2, y2)) / context_idxs.size(0) + config.sp_lambda * nll_average(predict_support.view(-1, 2), is_support.view(-1))
+        loss = config.sp_lambda * nll_average(predict_support.view(-1, 2), is_support.view(-1))#yxh
         answer_dict_ = convert_tokens(eval_file, data['ids'], yp1.data.cpu().numpy().tolist(), yp2.data.cpu().numpy().tolist(), np.argmax(predict_type.data.cpu().numpy(), 1))
         answer_dict.update(answer_dict_)
 
