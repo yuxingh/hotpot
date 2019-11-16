@@ -140,18 +140,12 @@ def train(config):
                 logging('-' * 89)
 
                 eval_start_time = time.time()
-                '''
+
                 dev_F1 = metrics['f1']
                 if best_dev_F1 is None or dev_F1 > best_dev_F1:
                     best_dev_F1 = dev_F1
                     torch.save(ori_model.state_dict(), os.path.join(config.save, 'model.pt'))
                     cur_patience = 0
-                '''
-                dev_loss = metrics['loss']
-                if best_loss is None or dev_loss < best_loss:
-                    best_loss = dev_loss
-                    torch.save(ori_model.state_dict(), os.path.join(config.save, 'model.pt'))
-                    cur_patience = 0#yxh
                 else:
                     cur_patience += 1
                     if cur_patience >= config.patience:
