@@ -133,9 +133,9 @@ def train(config):
                 all_mapping2 = Variable(data2['all_mapping'])
     
                 logit12, logit22, predict_type2, predict_support2 = model(context_idxs2, ques_idxs2, context_char_idxs2, ques_char_idxs2, context_lens2, start_mapping2, end_mapping2, all_mapping2, return_yp=False)
-                loss_12 = (nll_sum(predict_type2, q_type2) + nll_sum(logit12, y12) + nll_sum(logit22, y22)) / context_idxs.size(0)
+                #loss_12 = (nll_sum(predict_type2, q_type2) + nll_sum(logit12, y12) + nll_sum(logit22, y22)) / context_idxs.size(0)
                 loss_22 = nll_average(predict_support2.view(-1, 2), is_support2.view(-1))
-                loss2 = loss_12 + config.sp_lambda * loss_22            
+                loss2 = config.sp_lambda * loss_22            
                 loss = loss+loss2
             except:
                 pass
