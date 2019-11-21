@@ -64,10 +64,11 @@ def train(config):
 
     logging("Building model...")
     train_buckets = get_buckets(config.train_record_file)
+    train_buckets_squad = get_buckets('squad_record.pkl')#yxh
     dev_buckets = get_buckets(config.dev_record_file)
 
-    def build_train_iterator():
-        return DataIterator(train_buckets, config.batch_size, config.para_limit, config.ques_limit, config.char_limit, True, config.sent_limit)
+    def build_train_iterator(buckets=train_buckets, batch_size=config.batch_size):
+        return DataIterator(train_buckets, batch_size, config.para_limit, config.ques_limit, config.char_limit, True, config.sent_limit)
 
     def build_dev_iterator():
         return DataIterator(dev_buckets, config.batch_size, config.para_limit, config.ques_limit, config.char_limit, False, config.sent_limit)
@@ -93,7 +94,8 @@ def train(config):
     start_time = time.time()
     eval_start_time = time.time()
     model.train()
-
+    
+    it2 = build_train_iterator(train_buckets_squad, config.batch_size)
     for epoch in range(1000):        
         for data in build_train_iterator():
             context_idxs = Variable(data['context_idxs'])
@@ -110,11 +112,34 @@ def train(config):
             all_mapping = Variable(data['all_mapping'])
 
             logit1, logit2, predict_type, predict_support = model(context_idxs, ques_idxs, context_char_idxs, ques_char_idxs, context_lens, start_mapping, end_mapping, all_mapping, return_yp=False)
-            #loss_1 = (nll_sum(predict_type, q_type) + nll_sum(logit1, y1) + nll_sum(logit2, y2)) / context_idxs.size(0)
-            #loss_2 = nll_average(predict_support.view(-1, 2), is_support.view(-1))
-            #loss = loss_1 + config.sp_lambda * loss_2
-            loss = config.sp_lambda * nll_average(predict_support.view(-1, 2), is_support.view(-1))#yxh
-
+            loss_1 = (nll_sum(predict_type, q_type) + nll_sum(logit1, y1) + nll_sum(logit2, y2)) / context_idxs.size(0)
+            loss_2 = nll_average(predict_support.view(-1, 2), is_support.view(-1))
+            loss = loss_1 + config.sp_lambda * loss_2
+            #loss = config.sp_lambda * nll_average(predict_support.view(-1, 2), is_support.view(-1))#yxh
+            ###
+            try:
+                data2 = next(it2)
+                context_idxs2 = Variable(data2['context_idxs'])
+                ques_idxs2 = Variable(data2['ques_idxs'])
+                context_char_idxs2 = Variable(data2['context_char_idxs'])
+                ques_char_idxs2 = Variable(data2['ques_char_idxs'])
+                context_lens2 = Variable(data2['context_lens'])
+                y12 = Variable(data2['y1'])
+                y22 = Variable(data2['y2'])
+                q_type2 = Variable(data2['q_type'])
+                is_support2 = Variable(data2['is_support'])
+                start_mapping2 = Variable(data2['start_mapping'])
+                end_mapping2 = Variable(data2['end_mapping'])
+                all_mapping2 = Variable(data2['all_mapping'])
+    
+                logit12, logit22, predict_type2, predict_support2 = model(context_idxs2, ques_idxs2, context_char_idxs2, ques_char_idxs2, context_lens2, start_mapping2, end_mapping2, all_mapping2, return_yp=False)
+                loss_12 = (nll_sum(predict_type2, q_type2) + nll_sum(logit12, y12) + nll_sum(logit22, y22)) / context_idxs.size(0)
+                loss_22 = nll_average(predict_support2.view(-1, 2), is_support2.view(-1))
+                loss2 = loss_12 + config.sp_lambda * loss_22            
+                loss = loss+loss2
+            except:
+                pass
+            ###
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
