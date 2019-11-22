@@ -136,7 +136,7 @@ def train(config):
                 #loss_12 = (nll_sum(predict_type2, q_type2) + nll_sum(logit12, y12) + nll_sum(logit22, y22)) / context_idxs.size(0)
                 loss_22 = nll_average(predict_support2.view(-1, 2), is_support2.view(-1))
                 loss2 = config.sp_lambda * loss_22            
-                loss = loss+loss2
+                loss = loss+0.5*loss2
             except:
                 pass
             ###
