@@ -96,8 +96,8 @@ def train(config):
     model.train()
     
     for epoch in range(1000):
-        it2 = build_train_iterator(train_buckets_squad, 12)        
-        for data in build_train_iterator():
+        it2 = build_train_iterator(train_buckets_squad, 1)        
+        for data in build_train_iterator(batch_size=23):
             context_idxs = Variable(data['context_idxs'])
             ques_idxs = Variable(data['ques_idxs'])
             context_char_idxs = Variable(data['context_char_idxs'])
@@ -207,7 +207,7 @@ def evaluate_batch(data_source, model, max_batches, eval_file, config):
         all_mapping = Variable(data['all_mapping'], volatile=True)
 
         logit1, logit2, predict_type, predict_support, yp1, yp2 = model(context_idxs, ques_idxs, context_char_idxs, ques_char_idxs, context_lens, start_mapping, end_mapping, all_mapping, return_yp=True)
-        #loss = (nll_sum(predict_type, q_type) + nll_sum(logit1, y1) + nll_sum(logit2, y2)) / context_idxs.size(0) + config.sp_lambda * nll_average(predict_support.view(-1, 2), is_support.view(-1))
+        loss = (nll_sum(predict_type, q_type) + nll_sum(logit1, y1) + nll_sum(logit2, y2)) / context_idxs.size(0) + config.sp_lambda * nll_average(predict_support.view(-1, 2), is_support.view(-1))
         loss = config.sp_lambda * nll_average(predict_support.view(-1, 2), is_support.view(-1))#yxh
         answer_dict_ = convert_tokens(eval_file, data['ids'], yp1.data.cpu().numpy().tolist(), yp2.data.cpu().numpy().tolist(), np.argmax(predict_type.data.cpu().numpy(), 1))
         answer_dict.update(answer_dict_)
