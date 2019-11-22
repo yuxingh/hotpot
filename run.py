@@ -182,7 +182,7 @@ def train(config):
                             break
                         cur_patience = 0
         if stop_train: break
-    #logging('best_dev_F1 {}'.format(best_dev_F1))
+    logging('best_dev_F1 {}'.format(best_dev_F1))
 
 
 def evaluate_batch(data_source, model, max_batches, eval_file, config):
