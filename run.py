@@ -96,8 +96,8 @@ def train(config):
     model.train()
     
     for epoch in range(1000):
-        it2 = build_train_iterator(train_buckets_squad, 1)        
-        for data in build_train_iterator(batch_size=23):
+        it2 = build_train_iterator(train_buckets_squad, 12)        
+        for data in build_train_iterator(batch_size=12):
             context_idxs = Variable(data['context_idxs'])
             ques_idxs = Variable(data['ques_idxs'])
             context_char_idxs = Variable(data['context_char_idxs'])
