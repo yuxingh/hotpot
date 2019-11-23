@@ -95,9 +95,9 @@ def train(config):
     eval_start_time = time.time()
     model.train()
     
-    for epoch in range(1000):
-        it2 = build_train_iterator(train_buckets_squad, 12)        
-        for data in build_train_iterator(batch_size=12):
+    for epoch in range(10000):
+        #it2 = build_train_iterator(train_buckets_squad, 12)        
+        for data in build_train_iterator(batch_size=24):
             context_idxs = Variable(data['context_idxs'])
             ques_idxs = Variable(data['ques_idxs'])
             context_char_idxs = Variable(data['context_char_idxs'])
@@ -117,6 +117,7 @@ def train(config):
             loss = loss_1 + config.sp_lambda * loss_2
             #loss = config.sp_lambda * nll_average(predict_support.view(-1, 2), is_support.view(-1))#yxh
             ###
+            '''
             try:
                 data2 = next(it2)
                 context_idxs2 = Variable(data2['context_idxs'])
@@ -139,6 +140,7 @@ def train(config):
                 loss = loss+loss2
             except:
                 pass
+            '''
             ###
             optimizer.zero_grad()
             loss.backward()
