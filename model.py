@@ -92,7 +92,7 @@ class Model(nn.Module):
         output = output + output_t
 
         sp_output = self.rnn_sp(output, context_lens)
-        print(sp_output)
+        print(sp_output.size())
 
         start_output = torch.matmul(start_mapping.permute(0, 2, 1).contiguous(), sp_output[:,:,self.hidden:])
         end_output = torch.matmul(end_mapping.permute(0, 2, 1).contiguous(), sp_output[:,:,:self.hidden])
