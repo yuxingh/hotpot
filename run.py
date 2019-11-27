@@ -184,6 +184,7 @@ def train(config):
                             break
                         cur_patience = 0
         if stop_train: break
+        break#yxh
     logging('best_dev_F1 {}'.format(best_dev_F1))
 
 
