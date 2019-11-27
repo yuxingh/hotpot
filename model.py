@@ -69,6 +69,8 @@ class Model(nn.Module):
 
         context_ch = self.char_emb(context_char_idxs.contiguous().view(-1, char_size)).view(bsz * para_size, char_size, -1)
         ques_ch = self.char_emb(ques_char_idxs.contiguous().view(-1, char_size)).view(bsz * ques_size, char_size, -1)
+        print("context_ch size:", context_ch.size())
+        print("ques_ch size:", ques_ch.size())
 
         context_ch = self.char_cnn(context_ch.permute(0, 2, 1).contiguous()).max(dim=-1)[0].view(bsz, para_size, -1)
         ques_ch = self.char_cnn(ques_ch.permute(0, 2, 1).contiguous()).max(dim=-1)[0].view(bsz, ques_size, -1)
@@ -92,7 +94,7 @@ class Model(nn.Module):
         output = output + output_t
 
         sp_output = self.rnn_sp(output, context_lens)
-        print(sp_output.size())
+        print("sp_output size:", sp_output.size())
 
         start_output = torch.matmul(start_mapping.permute(0, 2, 1).contiguous(), sp_output[:,:,self.hidden:])
         end_output = torch.matmul(end_mapping.permute(0, 2, 1).contiguous(), sp_output[:,:,:self.hidden])
