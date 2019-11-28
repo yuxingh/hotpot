@@ -214,8 +214,9 @@ def evaluate_batch(data_source, model, max_batches, eval_file, config):
         start_mapping = Variable(data['start_mapping'], volatile=True)
         end_mapping = Variable(data['end_mapping'], volatile=True)
         all_mapping = Variable(data['all_mapping'], volatile=True)
+        is_support = Variable(data['is_support'], volatile=True)#yxh
 
-        logit1, logit2, predict_type, predict_support, yp1, yp2 = model(context_idxs, ques_idxs, context_char_idxs, ques_char_idxs, context_lens, start_mapping, end_mapping, all_mapping, return_yp=True)
+        logit1, logit2, predict_type, predict_support, yp1, yp2 = model(context_idxs, ques_idxs, context_char_idxs, ques_char_idxs, context_lens, start_mapping, end_mapping, all_mapping, is_support, return_yp=True)
         loss = (nll_sum(predict_type, q_type) + nll_sum(logit1, y1) + nll_sum(logit2, y2)) / context_idxs.size(0) + config.sp_lambda * nll_average(predict_support.view(-1, 2), is_support.view(-1))
         loss = config.sp_lambda * nll_average(predict_support.view(-1, 2), is_support.view(-1))#yxh
         answer_dict_ = convert_tokens(eval_file, data['ids'], yp1.data.cpu().numpy().tolist(), yp2.data.cpu().numpy().tolist(), np.argmax(predict_type.data.cpu().numpy(), 1))
@@ -242,8 +243,9 @@ def predict(data_source, model, eval_file, config, prediction_file):
         start_mapping = Variable(data['start_mapping'], volatile=True)
         end_mapping = Variable(data['end_mapping'], volatile=True)
         all_mapping = Variable(data['all_mapping'], volatile=True)
+        is_support = Variable(data['is_support'], volatile=True)#yxh
 
-        logit1, logit2, predict_type, predict_support, yp1, yp2 = model(context_idxs, ques_idxs, context_char_idxs, ques_char_idxs, context_lens, start_mapping, end_mapping, all_mapping, return_yp=True)
+        logit1, logit2, predict_type, predict_support, yp1, yp2 = model(context_idxs, ques_idxs, context_char_idxs, ques_char_idxs, context_lens, start_mapping, end_mapping, all_mapping, is_support, return_yp=True)
         answer_dict_ = convert_tokens(eval_file, data['ids'], yp1.data.cpu().numpy().tolist(), yp2.data.cpu().numpy().tolist(), np.argmax(predict_type.data.cpu().numpy(), 1))
         answer_dict.update(answer_dict_)
 
