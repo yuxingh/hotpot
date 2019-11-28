@@ -108,6 +108,7 @@ def train(config):
             q_type = Variable(data['q_type'])
             is_support = Variable(data['is_support'])
             print("is_support:", is_support)
+            print("is_support size:", is_support.size())
             start_mapping = Variable(data['start_mapping'])
             end_mapping = Variable(data['end_mapping'])
             all_mapping = Variable(data['all_mapping'])

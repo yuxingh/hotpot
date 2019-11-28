@@ -84,6 +84,8 @@ class SPModel(nn.Module):
 
         output = self.qc_att(context_output, ques_output, ques_mask)
         output = self.linear_1(output)
+        print("output:", output)
+        print("output size:", output.size())
 
         output_t = self.rnn_2(output, context_lens)
         output_t = self.self_att(output_t, output_t, context_mask)
