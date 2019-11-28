@@ -99,7 +99,9 @@ class SPModel(nn.Module):
         sp_output_t = self.linear_sp(sp_output)
         sp_output_aux = Variable(sp_output_t.data.new(sp_output_t.size(0), sp_output_t.size(1), 1).zero_())
         predict_support = torch.cat([sp_output_aux, sp_output_t], dim=-1).contiguous()
-
+        print("sp_output:", sp_output)
+        print("sp_output size:", sp_output.size())
+        
         sp_output = is_support*10000#yxh
         sp_output = torch.matmul(all_mapping, sp_output)
         output_start = torch.cat([output, sp_output], dim=-1)

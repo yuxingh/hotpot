@@ -113,13 +113,8 @@ def train(config):
             all_mapping = Variable(data['all_mapping'])
 
             logit1, logit2, predict_type, predict_support = model(context_idxs, ques_idxs, context_char_idxs, ques_char_idxs, context_lens, start_mapping, end_mapping, all_mapping, is_support=is_support, return_yp=False)
-            print("predict_support:", predict_support)
             loss_1 = (nll_sum(predict_type, q_type) + nll_sum(logit1, y1) + nll_sum(logit2, y2)) / context_idxs.size(0)
             loss_2 = nll_average(predict_support.view(-1, 2), is_support.view(-1))
-            print("predict_support:", predict_support.view(-1,2))
-            print("predict_support size:", predict_support.view(-1,2).size())
-            print("is_support:", is_support.view(-1))
-            print("is_support size:", is_support.view(-1).size())
             loss = loss_1 + config.sp_lambda * loss_2
             #loss = config.sp_lambda * nll_average(predict_support.view(-1, 2), is_support.view(-1))#yxh
             ###
