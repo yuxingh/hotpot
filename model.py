@@ -105,7 +105,7 @@ class Model(nn.Module):
         print("sp_output size:", sp_output.size())
         print("is_support size:", is_support.size())
         is_support = is_support.view(is_support.size()[0], is_support.size()[1], 1)
-        sp_output = is_support#yxh
+        sp_output = is_support.double()#yxh
         sp_output = torch.matmul(all_mapping, sp_output)
         output = torch.cat([output, sp_output], dim=-1)
 
