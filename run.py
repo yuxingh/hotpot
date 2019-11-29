@@ -95,7 +95,7 @@ def train(config):
     eval_start_time = time.time()
     model.train()
     
-    for epoch in range(1):
+    for epoch in range(10000):
         #it2 = build_train_iterator(train_buckets_squad, 12)        
         for data in build_train_iterator(batch_size=24):
             context_idxs = Variable(data['context_idxs'])
@@ -183,7 +183,7 @@ def train(config):
                             stop_train = True
                             break
                         cur_patience = 0
-            break#yxh
+            #break#yxh
         if stop_train: break
     logging('best_dev_F1 {}'.format(best_dev_F1))
 
