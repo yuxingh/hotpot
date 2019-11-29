@@ -94,7 +94,6 @@ class Model(nn.Module):
         output = output + output_t
 
         sp_output = self.rnn_sp(output, context_lens)
-        print("sp_output size:", sp_output.size())
 
         start_output = torch.matmul(start_mapping.permute(0, 2, 1).contiguous(), sp_output[:,:,self.hidden:])
         end_output = torch.matmul(end_mapping.permute(0, 2, 1).contiguous(), sp_output[:,:,:self.hidden])
@@ -102,8 +101,10 @@ class Model(nn.Module):
         sp_output = self.linear_sp(sp_output)
         sp_output_aux = Variable(sp_output.data.new(sp_output.size(0), sp_output.size(1), 1).zero_())
         predict_support = torch.cat([sp_output_aux, sp_output], dim=-1).contiguous()
-
-        sp_output = is_support*10000#yxh
+        
+        print("sp_output size:", sp_output.size())
+        print("is_support size:", is_support size())
+        sp_output = is_support#yxh
         sp_output = torch.matmul(all_mapping, sp_output)
         output = torch.cat([output, sp_output], dim=-1)
 
