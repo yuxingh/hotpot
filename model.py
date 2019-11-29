@@ -102,6 +102,7 @@ class Model(nn.Module):
         print("sp_output:", sp_output)
 
         is_support = is_support.view(is_support.size()[0], is_support.size()[1], 1)
+        is_support = is_support*2000-1000
         sp_output = is_support.float()#yxh
         print("is_support:", sp_output)
         sp_output = torch.matmul(all_mapping, sp_output)
