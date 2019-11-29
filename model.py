@@ -69,8 +69,6 @@ class Model(nn.Module):
 
         context_ch = self.char_emb(context_char_idxs.contiguous().view(-1, char_size)).view(bsz * para_size, char_size, -1)
         ques_ch = self.char_emb(ques_char_idxs.contiguous().view(-1, char_size)).view(bsz * ques_size, char_size, -1)
-        print("context_ch size:", context_ch.size())
-        print("ques_ch size:", ques_ch.size())
 
         context_ch = self.char_cnn(context_ch.permute(0, 2, 1).contiguous()).max(dim=-1)[0].view(bsz, para_size, -1)
         ques_ch = self.char_cnn(ques_ch.permute(0, 2, 1).contiguous()).max(dim=-1)[0].view(bsz, ques_size, -1)
@@ -102,8 +100,7 @@ class Model(nn.Module):
         sp_output_aux = Variable(sp_output.data.new(sp_output.size(0), sp_output.size(1), 1).zero_())
         predict_support = torch.cat([sp_output_aux, sp_output], dim=-1).contiguous()
         
-        print("sp_output size:", sp_output.size())
-        print("is_support size:", is_support.size())
+
         is_support = is_support.view(is_support.size()[0], is_support.size()[1], 1)
         sp_output = is_support.float()#yxh
         sp_output = torch.matmul(all_mapping, sp_output)
