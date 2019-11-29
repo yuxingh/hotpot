@@ -99,12 +99,11 @@ class Model(nn.Module):
         sp_output = self.linear_sp(sp_output)
         sp_output_aux = Variable(sp_output.data.new(sp_output.size(0), sp_output.size(1), 1).zero_())
         predict_support = torch.cat([sp_output_aux, sp_output], dim=-1).contiguous()
-        
+        print("sp_output:", sp_output)
 
         is_support = is_support.view(is_support.size()[0], is_support.size()[1], 1)
         sp_output = is_support.float()#yxh
-        print("is_support:", is_support)
-        print("sp_output:", sp_output)
+        print("is_support:", sp_output)
         sp_output = torch.matmul(all_mapping, sp_output)
         output = torch.cat([output, sp_output], dim=-1)
 
