@@ -111,7 +111,7 @@ class SPModel(nn.Module):
         print("predict_support size:", predict_support.size())
         print("is_support inside:", is_support.size())
         
-        sp_output = is_support*10000#yxh
+        #sp_output = is_support#yxh
         sp_output = torch.matmul(all_mapping, sp_output)
         output_start = torch.cat([output, sp_output], dim=-1)
 
