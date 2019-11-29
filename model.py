@@ -101,7 +101,7 @@ class Model(nn.Module):
         predict_support = torch.cat([sp_output_aux, sp_output], dim=-1).contiguous()
 
         is_support = is_support.view(is_support.size()[0], is_support.size()[1], 1)#yxh
-        is_support = is_support*200-100#yxh
+        #is_support = is_support*200-100#yxh
         sp_output = is_support.float()#yxh
         sp_output = torch.matmul(all_mapping, sp_output)
         output = torch.cat([output, sp_output], dim=-1)
