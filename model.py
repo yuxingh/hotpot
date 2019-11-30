@@ -100,7 +100,7 @@ class Model(nn.Module):
         sp_output_aux = Variable(sp_output.data.new(sp_output.size(0), sp_output.size(1), 1).zero_())
         predict_support = torch.cat([sp_output_aux, sp_output], dim=-1).contiguous()
 
-        if is_support:
+        if is_support is not None:
             is_support = is_support.view(is_support.size()[0], is_support.size()[1], 1)#yxh
             is_support = is_support#yxh
             sp_output = is_support.float()#yxh
