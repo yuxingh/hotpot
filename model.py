@@ -102,7 +102,7 @@ class Model(nn.Module):
 
         if is_support is not None:
             is_support = is_support.view(is_support.size()[0], is_support.size()[1], 1)#yxh
-            is_support = is_support*20-10#yxh
+            is_support = is_support#yxh
             sp_output = is_support.float()#yxh
         sp_output = torch.matmul(all_mapping, sp_output)
         output = torch.cat([output, sp_output], dim=-1)
