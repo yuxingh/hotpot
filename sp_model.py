@@ -75,21 +75,21 @@ class SPModel(nn.Module):
 
         context_word = self.word_emb(context_idxs)
         ques_word = self.word_emb(ques_idxs)
-        print("context_word size:", context_word.size())
-        print("ques_word size:", ques_word.size())
+        #print("context_word size:", context_word.size())
+        #print("ques_word size:", ques_word.size())
 
         context_output = torch.cat([context_word, context_ch], dim=2)
         ques_output = torch.cat([ques_word, ques_ch], dim=2)
 
         context_output = self.rnn(context_output, context_lens)
         ques_output = self.rnn(ques_output)
-        print("context_output size:",context_output.size())
-        print("ques_output size:", ques_output.size())
+        #print("context_output size:",context_output.size())
+        #print("ques_output size:", ques_output.size())
 
         output = self.qc_att(context_output, ques_output, ques_mask)
         output = self.linear_1(output)
-        print("output:", output)
-        print("output size:", output.size())
+        #print("output:", output)
+        #print("output size:", output.size())
 
         output_t = self.rnn_2(output, context_lens)
         output_t = self.self_att(output_t, output_t, context_mask)
@@ -105,11 +105,11 @@ class SPModel(nn.Module):
         sp_output_t = self.linear_sp(sp_output)
         sp_output_aux = Variable(sp_output_t.data.new(sp_output_t.size(0), sp_output_t.size(1), 1).zero_())
         predict_support = torch.cat([sp_output_aux, sp_output_t], dim=-1).contiguous()
-        print("sp_output:", sp_output)
-        print("sp_output size:", sp_output.size())
-        print("sp_output_t size:", sp_output_t.size())
-        print("predict_support size:", predict_support.size())
-        print("is_support inside:", is_support.size())
+        #print("sp_output:", sp_output)
+        #print("sp_output size:", sp_output.size())
+        #print("sp_output_t size:", sp_output_t.size())
+        #print("predict_support size:", predict_support.size())
+        #print("is_support inside:", is_support.size())
         
         #sp_output = is_support#yxh
         sp_output = torch.matmul(all_mapping, sp_output)
