@@ -295,7 +295,7 @@ def test(config):
         return DataIterator(dev_buckets, config.batch_size, para_limit,
             ques_limit, config.char_limit, False, config.sent_limit)
 
-    if config.sp_lambda = 0:#yxh
+    if config.sp_lambda == 0:#yxh
         model = SPModel(config, word_mat, char_mat)
     else:
         model = Model(config, word_mat, char_mat)
